@@ -3,22 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>دیوان و مقالات | دیوان و مقاله‌لر</title>
+    <meta name="theme-color" content="#0f172a">
+    <title>دفتر شعر و نغمه | Aslan</title>
+    <!-- لود فونت و آیکون‌ها -->
     <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
         :root {
-            --bg-color: #0f172a;
+            --bg-color: #0b1120;
             --card-bg: #1e293b;
             --text-main: #f8fafc;
             --text-sub: #94a3b8;
             --accent: #38bdf8;
+            --accent-hover: #0284c7;
             --border: #334155;
+            --modal-bg: #1e293b;
+            --success: #22c55e;
+            --danger: #ef4444;
         }
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: 'Vazirmatn', sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
         body {
             background-color: var(--bg-color);
@@ -26,109 +35,220 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            padding-bottom: 90px;
         }
         header {
-            background-color: rgba(15, 23, 42, 0.9);
+            background-color: rgba(11, 17, 32, 0.95);
             border-bottom: 1px solid var(--border);
-            padding: 1rem 1.5rem;
+            padding: 0.85rem 1.25rem;
             position: sticky;
             top: 0;
-            backdrop-filter: blur(8px);
+            backdrop-filter: blur(10px);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            z-index: 10;
+            z-index: 100;
         }
         .logo {
-            font-size: 1.25rem;
+            font-size: 1.1rem;
             font-weight: 700;
             color: var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
         .lang-switch button {
             background: var(--card-bg);
             border: 1px solid var(--border);
             color: var(--text-main);
-            padding: 0.35rem 0.75rem;
+            padding: 0.3rem 0.6rem;
             border-radius: 6px;
             cursor: pointer;
-            font-size: 0.85rem;
-            margin-right: 0.25rem;
-            transition: 0.2s;
+            font-size: 0.8rem;
         }
-        .lang-switch button.active, .lang-switch button:hover {
+        .lang-switch button.active {
             background: var(--accent);
             color: #0f172a;
-            font-weight: 600;
+            font-weight: 700;
         }
         main {
             flex: 1;
-            max-width: 900px;
+            max-width: 720px;
             width: 100%;
-            margin: 2rem auto;
+            margin: 1rem auto;
             padding: 0 1rem;
         }
-        .hero {
-            text-align: center;
-            margin-bottom: 3rem;
-            padding: 2rem 1rem;
-            background: radial-gradient(circle, rgba(56, 189, 248, 0.08) 0%, rgba(15, 23, 42, 0) 70%);
+
+        /* کارت پروفایل سازنده و دکمه ویرایش */
+        .author-card {
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.2rem;
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            position: relative;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
         }
-        .hero h1 {
-            font-size: 2.2rem;
-            margin-bottom: 0.75rem;
+        .author-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--accent);
+            color: #0f172a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            flex-shrink: 0;
         }
-        .hero p {
-            color: var(--text-sub);
+        .author-info {
+            flex: 1;
+        }
+        .author-info h2 {
             font-size: 1.1rem;
+            margin-bottom: 0.2rem;
         }
+        .author-info p {
+            font-size: 0.85rem;
+            color: var(--text-sub);
+            margin-bottom: 0.5rem;
+        }
+        .social-links {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .social-links a {
+            color: var(--accent);
+            background: rgba(56, 189, 248, 0.12);
+            padding: 4px 10px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 0.8rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .edit-profile-btn {
+            position: absolute;
+            top: 12px;
+            inset-inline-end: 12px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border);
+            color: var(--text-sub);
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        .edit-profile-btn:hover {
+            color: var(--accent);
+        }
+
+        /* پلیر موزیک */
+        .music-player-bar {
+            background: #1e293b;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 0.75rem 1rem;
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+        .music-title {
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-main);
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+        .music-btns {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .music-btn {
+            background: rgba(56, 189, 248, 0.15);
+            border: none;
+            color: var(--accent);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        /* تب‌ها */
         .tabs {
             display: flex;
-            gap: 1rem;
             border-bottom: 1px solid var(--border);
-            margin-bottom: 2rem;
+            margin-bottom: 1.25rem;
         }
         .tab-btn {
             background: none;
             border: none;
             color: var(--text-sub);
             padding: 0.75rem 1rem;
-            font-size: 1rem;
+            font-size: 0.95rem;
             cursor: pointer;
             border-bottom: 2px solid transparent;
-            font-weight: 500;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
         .tab-btn.active {
             color: var(--accent);
             border-bottom-color: var(--accent);
         }
+
+        /* محتوای شعرها */
         .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
         }
         .card {
             background: var(--card-bg);
             border: 1px solid var(--border);
             border-radius: 12px;
-            padding: 1.5rem;
-            transition: transform 0.2s, border-color 0.2s;
+            padding: 1.25rem;
         }
-        .card:hover {
-            transform: translateY(-4px);
-            border-color: var(--accent);
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.6rem;
         }
         .card-tag {
-            display: inline-block;
             background: rgba(56, 189, 248, 0.15);
             color: var(--accent);
             font-size: 0.75rem;
             padding: 0.2rem 0.5rem;
-            border-radius: 4px;
-            margin-bottom: 0.75rem;
+            border-radius: 6px;
+        }
+        .card-actions button {
+            background: none;
+            border: none;
+            color: var(--text-sub);
+            cursor: pointer;
         }
         .card h2 {
-            font-size: 1.25rem;
-            margin-bottom: 0.75rem;
+            font-size: 1.15rem;
+            margin-bottom: 0.6rem;
         }
         .card p {
             color: var(--text-sub);
@@ -136,20 +256,189 @@
             line-height: 1.8;
             white-space: pre-line;
         }
-        footer {
-            border-top: 1px solid var(--border);
-            text-align: center;
-            padding: 1.5rem;
-            color: var(--text-sub);
+        .card img {
+            max-width: 100%;
+            border-radius: 8px;
+            margin-top: 0.75rem;
+            border: 1px solid var(--border);
+        }
+
+        /* سیستم چت */
+        .chat-section {
+            display: none;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1rem;
+        }
+        .chat-section.active {
+            display: block;
+        }
+        .chat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 1rem;
+        }
+        .chat-status {
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+        .chat-messages {
+            height: 280px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding-inline-end: 4px;
+            margin-bottom: 1rem;
+        }
+        .msg {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border);
+            padding: 0.6rem 0.8rem;
+            border-radius: 8px;
             font-size: 0.85rem;
-            margin-top: 3rem;
+        }
+        .msg-sender {
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 3px;
+        }
+        .chat-form {
+            display: flex;
+            gap: 8px;
+        }
+        .chat-form input {
+            background: #0b1120;
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 0.6rem 0.8rem;
+            border-radius: 8px;
+            outline: none;
+        }
+        .chat-form input.name {
+            width: 90px;
+        }
+        .chat-form input.txt {
+            flex: 1;
+        }
+        .chat-form button {
+            background: var(--accent);
+            color: #0f172a;
+            border: none;
+            padding: 0 1rem;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* دکمه شناور */
+        .fab {
+            position: fixed;
+            inset-inline-end: 1.5rem;
+            bottom: 1.5rem;
+            background: var(--accent);
+            color: #0f172a;
+            border: none;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(56, 189, 248, 0.4);
+            z-index: 99;
+        }
+
+        /* مودال‌ها */
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+        .modal.active {
+            display: flex;
+        }
+        .modal-content {
+            background: var(--modal-bg);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            width: 100%;
+            max-width: 480px;
+            padding: 1.25rem;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        .close-btn {
+            background: none;
+            border: none;
+            color: var(--text-sub);
+            font-size: 1.4rem;
+            cursor: pointer;
+        }
+        .form-group {
+            margin-bottom: 0.9rem;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.3rem;
+            font-size: 0.85rem;
+            color: var(--text-sub);
+        }
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            background: #0b1120;
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 0.65rem 0.8rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            outline: none;
+        }
+        .btn-submit {
+            width: 100%;
+            background: var(--accent);
+            color: #0f172a;
+            border: none;
+            padding: 0.8rem;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 0.4rem;
         }
     </style>
 </head>
 <body>
 
     <header>
-        <div class="logo" id="siteTitle">کتابخانه شعر و ادب</div>
+        <div class="logo">
+            <i class="fa-solid fa-feather-pointed"></i>
+            <span id="siteTitle">کتابخانه من</span>
+        </div>
         <div class="lang-switch">
             <button class="active" onclick="setLanguage('fa')">فارسی</button>
             <button onclick="setLanguage('az')">Türkçe</button>
@@ -158,117 +447,234 @@
     </header>
 
     <main>
-        <div class="hero">
-            <h1 id="heroTitle">مجموعه شعرها و یادداشت‌ها</h1>
-            <p id="heroSubtitle">دفتر واژه‌ها، اندیشه‌ها و نغمه‌های ماندگار</p>
+        <!-- پروفایل سازنده و آیدی‌ها با دکمه ویرایش مستقیم -->
+        <div class="author-card">
+            <button class="edit-profile-btn" onclick="openProfileModal()" title="ویرایش اطلاعات من">
+                <i class="fa-solid fa-pen"></i>
+            </button>
+            <div class="author-avatar">
+                <i class="fa-solid fa-user-ninja"></i>
+            </div>
+            <div class="author-info">
+                <h2 id="profName">سازنده: Aslan</h2>
+                <p id="profBio">مجموعه اشعار، یادداشت‌ها و دل‌نوشته‌های اختصاصی</p>
+                <div class="social-links">
+                    <a id="profTg" href="https://t.me/aslan" target="_blank"><i class="fa-brands fa-telegram"></i> <span>@aslan</span></a>
+                    <a id="profIg" href="https://instagram.com/aslan" target="_blank"><i class="fa-brands fa-instagram"></i> <span>اینستاگرام</span></a>
+                </div>
+            </div>
         </div>
 
+        <!-- نوار پخش موسیقی / دکلمه -->
+        <div class="music-player-bar">
+            <div class="music-title">
+                <i class="fa-solid fa-music" style="color:var(--accent)"></i>
+                <span id="musicTrackName">موسیقی آرامش‌بخش پس‌زمینه</span>
+            </div>
+            <div class="music-btns">
+                <button class="music-btn" onclick="toggleAudio()" id="btnPlay" title="پخش / توقف">
+                    <i class="fa-solid fa-play"></i>
+                </button>
+                <button class="music-btn" onclick="document.getElementById('musicFileInput').click()" title="انتخاب آهنگ از گوشی">
+                    <i class="fa-solid fa-folder-open"></i>
+                </button>
+                <input type="file" id="musicFileInput" accept="audio/*" style="display:none" onchange="loadCustomMusic(event)">
+            </div>
+            <audio id="audioElem" loop preload="none">
+                <source src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3" type="audio/mpeg">
+            </audio>
+        </div>
+
+        <!-- تب‌ها: شعرها، مقالات، و چت عمومی -->
         <div class="tabs">
-            <button class="tab-btn active" id="tabPoem" onclick="switchCategory('poems')">شعرها</button>
-            <button class="tab-btn" id="tabArticle" onclick="switchCategory('articles')">مقاله‌ها</button>
+            <button class="tab-btn active" id="tabPoem" onclick="switchCategory('poems')">
+                <i class="fa-solid fa-book-open"></i> <span>شعرها</span>
+            </button>
+            <button class="tab-btn" id="tabArticle" onclick="switchCategory('articles')">
+                <i class="fa-solid fa-newspaper"></i> <span>مقاله‌ها</span>
+            </button>
+            <button class="tab-btn" id="tabChat" onclick="switchCategory('chat')">
+                <i class="fa-solid fa-comments"></i> <span>اتاق گفت‌وگو</span>
+            </button>
         </div>
 
-        <div class="grid" id="contentGrid">
-            <!-- آیتم‌ها به زبان انتخاب‌شده تزریق می‌شوند -->
+        <!-- بخش مطالب -->
+        <div class="grid" id="contentGrid"></div>
+
+        <!-- بخش اتاق گفت‌وگو و چت -->
+        <div class="chat-section" id="chatSection">
+            <div class="chat-header">
+                <div class="chat-status">
+                    <span class="status-dot" id="chatDot"></span>
+                    <span id="chatStatusText">وضعیت چت: باز</span>
+                </div>
+                <!-- دکمه قفل و باز کردن چت توسط خودت -->
+                <button onclick="toggleChatStatus()" style="background:#0b1120; border:1px solid var(--border); color:var(--text-sub); padding:4px 10px; border-radius:6px; font-size:0.8rem; cursor:pointer;">
+                    <i class="fa-solid fa-lock"></i> تغییر وضعیت قفل چت
+                </button>
+            </div>
+            <div class="chat-messages" id="chatMessages"></div>
+            <form class="chat-form" id="chatForm" onsubmit="sendChatMessage(event)">
+                <input type="text" id="chatName" class="name" placeholder="نام شما" required>
+                <input type="text" id="chatText" class="txt" placeholder="پیام خود را بنویسید..." required>
+                <button type="submit"><i class="fa-solid fa-paper-plane"></i></button>
+            </form>
         </div>
     </main>
 
-    <footer>
-        <p>© 2026 تمامی حقوق محفوظ است | Diwan & Articles</p>
-    </footer>
+    <!-- دکمه شناور افزودن شعر -->
+    <button class="fab" onclick="openModal()" title="افزودن مطلب">+</button>
+
+    <!-- مودال ویرایش پروفایل و آیدی‌ها -->
+    <div class="modal" id="profileModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>ویرایش مشخصات و آیدی من</h3>
+                <button class="close-btn" onclick="closeProfileModal()">&times;</button>
+            </div>
+            <form onsubmit="saveProfile(event)">
+                <div class="form-group">
+                    <label>نام نمایشی</label>
+                    <input type="text" id="editName" required>
+                </div>
+                <div class="form-group">
+                    <label>بیوگرافی کوتاه</label>
+                    <input type="text" id="editBio">
+                </div>
+                <div class="form-group">
+                    <label>آیدی تلگرام (بدون @ یا با لینک)</label>
+                    <input type="text" id="editTg" placeholder="مثال: aslan">
+                </div>
+                <div class="form-group">
+                    <label>آیدی اینستاگرام</label>
+                    <input type="text" id="editIg" placeholder="مثال: aslan">
+                </div>
+                <button type="submit" class="btn-submit">ذخیره تغییرات</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- مودال افزودن شعر و مقاله -->
+    <div class="modal" id="addModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>افزودن مطلب جدید</h3>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <form id="postForm" onsubmit="savePost(event)">
+                <div class="form-group">
+                    <label>نوع مطلب</label>
+                    <select id="postType">
+                        <option value="poems">شعر</option>
+                        <option value="articles">مقاله</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>زبان</label>
+                    <select id="postLang">
+                        <option value="fa">فارسی</option>
+                        <option value="az">Türkçe</option>
+                        <option value="en">English</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>عنوان</label>
+                    <input type="text" id="postTitle" required>
+                </div>
+                <div class="form-group">
+                    <label>قالب / تگ</label>
+                    <input type="text" id="postTag" placeholder="مثال: غزل، دلنوشته">
+                </div>
+                <div class="form-group">
+                    <label>متن</label>
+                    <textarea id="postBody" rows="5" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>تصویر (اختیاری)</label>
+                    <input type="file" id="postFile" accept="image/*">
+                </div>
+                <button type="submit" class="btn-submit">ذخیره و انتشار</button>
+            </form>
+        </div>
+    </div>
 
     <script>
-        const data = {
+        // پروفایل سازنده ذخیره شده در حافظه
+        let profile = JSON.parse(localStorage.getItem('my_author_profile')) || {
+            name: "سازنده و نویسنده: Aslan",
+            bio: "مجموعه اشعار، یادداشت‌ها و دل‌نوشته‌های اختصاصی",
+            tg: "aslan",
+            ig: "aslan"
+        };
+
+        // دیتای مطالب
+        const defaultData = {
             fa: {
-                title: "کتابخانه شعر و ادب",
-                heroTitle: "مجموعه شعرها و یادداشت‌ها",
-                heroSub: "دفتر واژه‌ها، اندیشه‌ها و نغمه‌های ماندگار",
-                tabPoem: "شعرها",
-                tabArticle: "مقاله‌ها",
-                dir: "rtl",
                 poems: [
-                    { title: "نوای سکوت", tag: "غزل", body: "در سکوت شب اگر نغمه دلدار شنیدی\nمگذر ز سر کوی نگاری که ندیدی\nهمه شب جلوه آن روی پریشان‌کن دل\nدیده‌ای در مه و از خواب گریزان بودی" },
-                    { title: "شعر بی‌فردا", tag: "نو", body: "کوچه‌ها بوی زمستان دارند\nدر گذرگاه زمان،\nسایه‌ای می‌گذرد خاموش و غریب..." }
+                    { id: 1, title: "نوای سکوت", tag: "غزل", body: "در سکوت شب اگر نغمه دلدار شنیدی\nمگذر ز سر کوی نگاری که ندیدی" }
                 ],
-                articles: [
-                    { title: "مفهوم خیال در شعر معاصر", tag: "نقد ادبی", body: "بررسی نقش تصویرسازی ذهنی و استعاره‌های نو در آثار شاعران معاصر..." }
-                ]
+                articles: []
             },
-            az: {
-                title: "Şeir və Ədəbiyyat Kitabxanası",
-                heroTitle: "Şeirlər və Məqalələr Toplusu",
-                heroSub: "Sözlərin, düşüncələrin və əbədi nəğmələrin dəftəri",
-                tabPoem: "Şeirlər",
-                tabArticle: "Məqalələr",
-                dir: "ltr",
-                poems: [
-                    { title: "Gecənin Səsi", tag: "Qoşma", body: "Gecə sakit, ay parıldar göylərdə,\nÜrək yanar keçmiş xatirələrdə.\nBir səs gəlir uzaqlardan duyğulu,\nGözlərimdən axar həsrətin yolu..." },
-                    { title: "Payız Küləyi", tag: "Sərbəst", body: "Yarpaqlar saralıb düşür torpağa,\nKülək pıçıldayır uzaq dağlara..." }
-                ],
-                articles: [
-                    { title: "Müasir Ədəbiyyatda İmgə", tag: "Tənqid", body: "Müasir şeirdə sözün gücü və poetik baxışın təhlili..." }
-                ]
-            },
-            en: {
-                title: "Poetry & Essays Library",
-                heroTitle: "Collection of Poems & Essays",
-                heroSub: "A sanctuary for timeless verses, reflections, and thoughts",
-                tabPoem: "Poems",
-                tabArticle: "Essays",
-                dir: "ltr",
-                poems: [
-                    { title: "Whispers of Dusk", tag: "Verse", body: "In the quiet of the night they weep,\nSecrets that the shadows keep.\nA gentle breeze, an aching tone,\nA heart that wanders all alone." }
-                ],
-                articles: [
-                    { title: "The Evolution of Rhythm", tag: "Essay", body: "An exploration into structural cadence and emotional delivery in modern literature..." }
-                ]
-            }
+            az: { poems: [], articles: [] },
+            en: { poems: [], articles: [] }
         };
 
         let currentLang = 'fa';
         let currentTab = 'poems';
+        let store = JSON.parse(localStorage.getItem('my_poetry_app_data')) || defaultData;
+        let isChatOpen = JSON.parse(localStorage.getItem('my_chat_open')) ?? true;
+        let chatMessages = JSON.parse(localStorage.getItem('my_chat_msgs')) || [
+            { sender: "Aslan", text: "به اتاق گفت‌وگو خوش اومدید!" }
+        ];
 
-        function render() {
-            const l = data[currentLang];
-            document.documentElement.dir = l.dir;
-            document.getElementById('siteTitle').innerText = l.title;
-            document.getElementById('heroTitle').innerText = l.heroTitle;
-            document.getElementById('heroSubtitle').innerText = l.heroSub;
-            document.getElementById('tabPoem').innerText = l.tabPoem;
-            document.getElementById('tabArticle').innerText = l.tabArticle;
-
-            const grid = document.getElementById('contentGrid');
-            grid.innerHTML = '';
-            const items = l[currentTab];
-
-            items.forEach(item => {
-                const card = document.createElement('div');
-                card.className = 'card';
-                card.innerHTML = `
-                    <span class="card-tag">${item.tag}</span>
-                    <h2>${item.title}</h2>
-                    <p>${item.body}</p>
-                `;
-                grid.appendChild(card);
-            });
+        function applyProfile() {
+            document.getElementById('profName').innerText = profile.name;
+            document.getElementById('profBio').innerText = profile.bio;
+            const tgClean = profile.tg.replace('@', '').replace('https://t.me/', '');
+            const igClean = profile.ig.replace('@', '').replace('https://instagram.com/', '');
+            document.getElementById('profTg').href = `https://t.me/${tgClean}`;
+            document.getElementById('profTg').querySelector('span').innerText = `@${tgClean}`;
+            document.getElementById('profIg').href = `https://instagram.com/${igClean}`;
         }
 
-        function setLanguage(lang) {
-            currentLang = lang;
-            document.querySelectorAll('.lang-switch button').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-            render();
+        function openProfileModal() {
+            document.getElementById('editName').value = profile.name;
+            document.getElementById('editBio').value = profile.bio;
+            document.getElementById('editTg').value = profile.tg;
+            document.getElementById('editIg').value = profile.ig;
+            document.getElementById('profileModal').classList.add('active');
         }
 
-        function switchCategory(cat) {
-            currentTab = cat;
-            document.getElementById('tabPoem').classList.toggle('active', cat === 'poems');
-            document.getElementById('tabArticle').classList.toggle('active', cat === 'articles');
-            render();
+        function closeProfileModal() {
+            document.getElementById('profileModal').classList.remove('active');
         }
 
-        render();
-    </script>
-</body>
-</html>
+        function saveProfile(e) {
+            e.preventDefault();
+            profile.name = document.getElementById('editName').value;
+            profile.bio = document.getElementById('editBio').value;
+            profile.tg = document.getElementById('editTg').value;
+            profile.ig = document.getElementById('editIg').value;
+            localStorage.setItem('my_author_profile', JSON.stringify(profile));
+            applyProfile();
+            closeProfileModal();
+        }
 
+        // پلیر موسیقی
+        const audio = document.getElementById('audioElem');
+        const btnPlay = document.getElementById('btnPlay');
+
+        function toggleAudio() {
+            if (audio.paused) {
+                audio.play();
+                btnPlay.innerHTML = '<i class="fa-solid fa-pause"></i>';
+            } else {
+                audio.pause();
+                btnPlay.innerHTML = '<i class="fa-solid fa-play"></i>';
+            }
+        }
+
+        function loadCustomMusic(event) {
+            const file = event.target.files[0];
+            if (file) {
+                audio.src = 
