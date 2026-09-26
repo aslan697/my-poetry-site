@@ -2,87 +2,92 @@
 <html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>دیوان و گفت‌وگو</title>
-    <!-- لود کتابخانه -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <title>دیوان اختصاصی</title>
     <style>
-        body { font-family: Tahoma, sans-serif; background: #0f172a; color: white; display: flex; justify-content: center; padding: 20px; }
-        .wrapper { width: 100%; max-width: 500px; }
-        .card { background: rgba(255,255,255,0.1); padding: 20px; border-radius: 15px; margin-bottom: 20px; }
-        input, textarea { width: 100%; padding: 12px; margin: 8px 0; border-radius: 8px; border: 1px solid #334155; background: #1e293b; color: white; box-sizing: border-box; }
-        button { width: 100%; padding: 12px; background: #6366f1; color: white; border: none; border-radius: 8px; cursor: pointer; }
-        .hidden { display: none; }
+        body { font-family: Tahoma, sans-serif; background: #0f172a; color: #f1f5f9; padding: 20px; display: flex; justify-content: center; }
+        .container { width: 100%; max-width: 500px; }
+        .card { background: #1e293b; padding: 20px; border-radius: 15px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
+        h1 { color: #f59e0b; text-align: center; }
+        .poem-card { border-bottom: 1px solid #334155; padding: 15px 0; }
+        button { cursor: pointer; padding: 10px; border-radius: 8px; border: none; margin: 5px; color: white; }
+        .btn-add { background: #6366f1; width: 100%; }
+        .btn-backup { background: #10b981; font-size: 12px; }
+        .btn-restore { background: #ef4444; font-size: 12px; }
     </style>
 </head>
 <body>
 
-<div class="wrapper">
-    <div id="reg-screen" class="card">
-        <h3>ورود به چت</h3>
-        <input type="text" id="reg-name" placeholder="نام">
-        <input type="text" id="reg-city" placeholder="شهر">
-        <button onclick="register()">شروع چت</button>
+<div class="container">
+    <h1>دیوان لجند</h1>
+    <div style="text-align:center; margin-bottom:20px;">
+        <span style="color:#6366f1; font-weight:bold;">رتبه: لجند</span>
     </div>
 
-    <div id="chat-screen" class="card hidden">
-        <div id="rank-badge" style="color:gold; font-weight:bold; margin-bottom:10px;">رتبه شما: نوپا</div>
-        <div id="chat-box" style="height:300px; overflow-y:auto; background:rgba(0,0,0,0.3); padding:10px; margin-bottom:10px; border-radius:5px;"></div>
-        <textarea id="message" placeholder="پیام..."></textarea>
-        <button onclick="sendMessage()">ارسال</button>
+    <div class="card">
+        <h3>مدیریت کتابخانه</h3>
+        <button class="btn-add" onclick="addPoem()">+ افزودن شعر جدید</button>
+        <div style="margin-top:10px; display:flex; justify-content: space-between;">
+            <button class="btn-backup" onclick="exportData()">📥 دانلود بک‌آپ (ذخیره)</button>
+            <input type="file" id="fileInput" style="display:none" onchange="importData(event)">
+            <button class="btn-restore" onclick="document.getElementById('fileInput').click()">📤 بازیابی بک‌آپ</button>
+        </div>
+    </div>
+
+    <div class="card" id="poems-list">
+        <!-- شعرها اینجا میان -->
     </div>
 </div>
 
 <script>
-    // ۱. اینجا کلیدت رو وارد کن
-    const db = supabase.createClient('https://bvjejxvkkkzlxgoxwfof.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ2amVqeHZra2t6bHhnb3h3Zm9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA0MzI2NzUsImV4cCI6MjEwNjAwODY3NX0.bgtcHV8UqtIXZbBRU8exxhE6f-uRaKdEvasDZrRCluk');
-    
-    function register() {
-        const name = document.getElementById('reg-name').value;
-        const city = document.getElementById('reg-city').value;
-        if(!name || !city) return alert('همه فیلدها را پر کن');
-        localStorage.setItem('user_name', name);
-        localStorage.setItem('user_city', city);
-        localStorage.setItem('points', 0);
-        location.reload(); // رفرش برای اعمال تنظیمات
+    let poems = JSON.parse(localStorage.getItem('my_poems')) || [];
+
+    function render() {
+        const list = document.getElementById('poems-list');
+        list.innerHTML = poems.length ? poems.map(p => `
+            <div class="poem-card">
+                <h4 style="margin:0">${p.title}</h4>
+                <p style="font-size:14px; color:#94a3b8;">${p.body.replace(/\n/g, '<br>')}</p>
+            </div>
+        `).join('') : '<p>هنوز شعری اضافه نکردی.</p>';
     }
 
-    if(localStorage.getItem('user_name')) {
-        document.getElementById('reg-screen').classList.add('hidden');
-        document.getElementById('chat-screen').classList.remove('hidden');
-        fetchMessages();
-    }
-
-    async function sendMessage() {
-        const content = document.getElementById('message').value;
-        if(!content) return;
+    function addPoem() {
+        const pass = prompt("رمز ادمین:");
+        if (pass !== "1234") return alert(" رمز اشتباهه کص ننت!");
         
-        let pts = parseInt(localStorage.getItem('points') || 0) + 10;
-        localStorage.setItem('points', pts);
-        
-        const { error } = await db.from('messages').insert([{ 
-            user_name: localStorage.getItem('user_name'),
-            user_city: localStorage.getItem('user_city'),
-            content: content,
-            user_rank: pts > 1000 ? 'لجند' : (pts > 100 ? 'استاد' : 'نوپا')
-        }]);
-        
-        document.getElementById('message').value = '';
-        if(error) alert(error.message);
-    }
-
-    async function fetchMessages() {
-        const { data } = await db.from('messages').select('*').order('created_at', { ascending: false });
-        if (data) {
-            document.getElementById('chat-box').innerHTML = data.map(m => `
-                <div style="margin-bottom:10px; font-size:14px;">
-                    <b style="color:#6366f1">${m.user_name} (${m.user_city})</b> <small style="color:gold">[${m.user_rank}]</small>: ${m.content}
-                </div>
-            `).join('');
+        const title = prompt("عنوان شعر:");
+        const body = prompt("متن شعر:");
+        if(title && body) {
+            poems.push({ title, body });
+            localStorage.setItem('my_poems', JSON.stringify(poems));
+            render();
         }
     }
 
-    // آپدیت زنده (ریل‌تایم)
-    db.channel('messages').on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, fetchMessages).subscribe();
+    // بک‌آپ گرفتن (برای اینکه اطلاعاتت نپره)
+    function exportData() {
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(poems));
+        const downloadAnchorNode = document.createElement('a');
+        downloadAnchorNode.setAttribute("href", dataStr);
+        downloadAnchorNode.setAttribute("download", "poems_backup.json");
+        document.body.appendChild(downloadAnchorNode);
+        downloadAnchorNode.click();
+        downloadAnchorNode.remove();
+    }
+
+    // بازگردانی اطلاعات
+    function importData(event) {
+        const file = event.target.files[0];
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            poems = JSON.parse(e.target.result);
+            localStorage.setItem('my_poems', JSON.stringify(poems));
+            render();
+        };
+        reader.readAsText(file);
+    }
+
+    render();
 </script>
 </body>
 </html>
