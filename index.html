@@ -1,11 +1,274 @@
-   <!DOCTYPE html>
-   <html lang="fa" dir="rtl">
-   <head>
-       <meta charset="UTF-8">
-       <title>سایت من</title>
-   </head>
-   <body>
-       <h1>سایت با موفقیت اجرا شد</h1>
-   </body>
-   </html>
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>دیوان و مقالات | دیوان و مقاله‌لر</title>
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-main: #f8fafc;
+            --text-sub: #94a3b8;
+            --accent: #38bdf8;
+            --border: #334155;
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        header {
+            background-color: rgba(15, 23, 42, 0.9);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 1.5rem;
+            position: sticky;
+            top: 0;
+            backdrop-filter: blur(8px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+        }
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+        .lang-switch button {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 0.35rem 0.75rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            margin-right: 0.25rem;
+            transition: 0.2s;
+        }
+        .lang-switch button.active, .lang-switch button:hover {
+            background: var(--accent);
+            color: #0f172a;
+            font-weight: 600;
+        }
+        main {
+            flex: 1;
+            max-width: 900px;
+            width: 100%;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        .hero {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem 1rem;
+            background: radial-gradient(circle, rgba(56, 189, 248, 0.08) 0%, rgba(15, 23, 42, 0) 70%);
+        }
+        .hero h1 {
+            font-size: 2.2rem;
+            margin-bottom: 0.75rem;
+        }
+        .hero p {
+            color: var(--text-sub);
+            font-size: 1.1rem;
+        }
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 2rem;
+        }
+        .tab-btn {
+            background: none;
+            border: none;
+            color: var(--text-sub);
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            font-weight: 500;
+        }
+        .tab-btn.active {
+            color: var(--accent);
+            border-bottom-color: var(--accent);
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+        .card:hover {
+            transform: translateY(-4px);
+            border-color: var(--accent);
+        }
+        .card-tag {
+            display: inline-block;
+            background: rgba(56, 189, 248, 0.15);
+            color: var(--accent);
+            font-size: 0.75rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            margin-bottom: 0.75rem;
+        }
+        .card h2 {
+            font-size: 1.25rem;
+            margin-bottom: 0.75rem;
+        }
+        .card p {
+            color: var(--text-sub);
+            font-size: 0.95rem;
+            line-height: 1.8;
+            white-space: pre-line;
+        }
+        footer {
+            border-top: 1px solid var(--border);
+            text-align: center;
+            padding: 1.5rem;
+            color: var(--text-sub);
+            font-size: 0.85rem;
+            margin-top: 3rem;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo" id="siteTitle">کتابخانه شعر و ادب</div>
+        <div class="lang-switch">
+            <button class="active" onclick="setLanguage('fa')">فارسی</button>
+            <button onclick="setLanguage('az')">Türkçe</button>
+            <button onclick="setLanguage('en')">English</button>
+        </div>
+    </header>
+
+    <main>
+        <div class="hero">
+            <h1 id="heroTitle">مجموعه شعرها و یادداشت‌ها</h1>
+            <p id="heroSubtitle">دفتر واژه‌ها، اندیشه‌ها و نغمه‌های ماندگار</p>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-btn active" id="tabPoem" onclick="switchCategory('poems')">شعرها</button>
+            <button class="tab-btn" id="tabArticle" onclick="switchCategory('articles')">مقاله‌ها</button>
+        </div>
+
+        <div class="grid" id="contentGrid">
+            <!-- آیتم‌ها به زبان انتخاب‌شده تزریق می‌شوند -->
+        </div>
+    </main>
+
+    <footer>
+        <p>© 2026 تمامی حقوق محفوظ است | Diwan & Articles</p>
+    </footer>
+
+    <script>
+        const data = {
+            fa: {
+                title: "کتابخانه شعر و ادب",
+                heroTitle: "مجموعه شعرها و یادداشت‌ها",
+                heroSub: "دفتر واژه‌ها، اندیشه‌ها و نغمه‌های ماندگار",
+                tabPoem: "شعرها",
+                tabArticle: "مقاله‌ها",
+                dir: "rtl",
+                poems: [
+                    { title: "نوای سکوت", tag: "غزل", body: "در سکوت شب اگر نغمه دلدار شنیدی\nمگذر ز سر کوی نگاری که ندیدی\nهمه شب جلوه آن روی پریشان‌کن دل\nدیده‌ای در مه و از خواب گریزان بودی" },
+                    { title: "شعر بی‌فردا", tag: "نو", body: "کوچه‌ها بوی زمستان دارند\nدر گذرگاه زمان،\nسایه‌ای می‌گذرد خاموش و غریب..." }
+                ],
+                articles: [
+                    { title: "مفهوم خیال در شعر معاصر", tag: "نقد ادبی", body: "بررسی نقش تصویرسازی ذهنی و استعاره‌های نو در آثار شاعران معاصر..." }
+                ]
+            },
+            az: {
+                title: "Şeir və Ədəbiyyat Kitabxanası",
+                heroTitle: "Şeirlər və Məqalələr Toplusu",
+                heroSub: "Sözlərin, düşüncələrin və əbədi nəğmələrin dəftəri",
+                tabPoem: "Şeirlər",
+                tabArticle: "Məqalələr",
+                dir: "ltr",
+                poems: [
+                    { title: "Gecənin Səsi", tag: "Qoşma", body: "Gecə sakit, ay parıldar göylərdə,\nÜrək yanar keçmiş xatirələrdə.\nBir səs gəlir uzaqlardan duyğulu,\nGözlərimdən axar həsrətin yolu..." },
+                    { title: "Payız Küləyi", tag: "Sərbəst", body: "Yarpaqlar saralıb düşür torpağa,\nKülək pıçıldayır uzaq dağlara..." }
+                ],
+                articles: [
+                    { title: "Müasir Ədəbiyyatda İmgə", tag: "Tənqid", body: "Müasir şeirdə sözün gücü və poetik baxışın təhlili..." }
+                ]
+            },
+            en: {
+                title: "Poetry & Essays Library",
+                heroTitle: "Collection of Poems & Essays",
+                heroSub: "A sanctuary for timeless verses, reflections, and thoughts",
+                tabPoem: "Poems",
+                tabArticle: "Essays",
+                dir: "ltr",
+                poems: [
+                    { title: "Whispers of Dusk", tag: "Verse", body: "In the quiet of the night they weep,\nSecrets that the shadows keep.\nA gentle breeze, an aching tone,\nA heart that wanders all alone." }
+                ],
+                articles: [
+                    { title: "The Evolution of Rhythm", tag: "Essay", body: "An exploration into structural cadence and emotional delivery in modern literature..." }
+                ]
+            }
+        };
+
+        let currentLang = 'fa';
+        let currentTab = 'poems';
+
+        function render() {
+            const l = data[currentLang];
+            document.documentElement.dir = l.dir;
+            document.getElementById('siteTitle').innerText = l.title;
+            document.getElementById('heroTitle').innerText = l.heroTitle;
+            document.getElementById('heroSubtitle').innerText = l.heroSub;
+            document.getElementById('tabPoem').innerText = l.tabPoem;
+            document.getElementById('tabArticle').innerText = l.tabArticle;
+
+            const grid = document.getElementById('contentGrid');
+            grid.innerHTML = '';
+            const items = l[currentTab];
+
+            items.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+                    <span class="card-tag">${item.tag}</span>
+                    <h2>${item.title}</h2>
+                    <p>${item.body}</p>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            document.querySelectorAll('.lang-switch button').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            render();
+        }
+
+        function switchCategory(cat) {
+            currentTab = cat;
+            document.getElementById('tabPoem').classList.toggle('active', cat === 'poems');
+            document.getElementById('tabArticle').classList.toggle('active', cat === 'articles');
+            render();
+        }
+
+        render();
+    </script>
+</body>
+</html>
 
