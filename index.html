@@ -2,115 +2,87 @@
 <html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>دیوان و گفت‌وگو | Legend System</title>
+    <title>دیوان و گفت‌وگو</title>
+    <!-- لود کتابخانه -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        :root { --primary: #6366f1; --bg: #0f172a; --text: #f8fafc; }
-        body { font-family: 'Tahoma', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; display: flex; justify-content: center; }
-        .wrapper { width: 100%; max-width: 900px; }
-        .card { background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); padding: 20px; border-radius: 15px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.1); }
-        h1 { text-align: center; color: var(--primary); }
-        
-        /* استایل رنک‌بندی */
-        #rank-badge { font-weight: bold; color: gold; font-size: 1.2em; text-align: center; margin: 10px 0; }
-        
-        #chat-box { height: 400px; overflow-y: auto; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 10px; }
-        input, textarea { width: 100%; padding: 12px; margin: 5px 0; background: #1e293b; border: 1px solid #334155; color: white; border-radius: 8px; box-sizing: border-box; }
-        button { width: 100%; padding: 12px; background: var(--primary); color: white; border: none; border-radius: 8px; cursor: pointer; transition: 0.3s; }
-        button:hover { background: #4f46e5; }
+        body { font-family: Tahoma, sans-serif; background: #0f172a; color: white; display: flex; justify-content: center; padding: 20px; }
+        .wrapper { width: 100%; max-width: 500px; }
+        .card { background: rgba(255,255,255,0.1); padding: 20px; border-radius: 15px; margin-bottom: 20px; }
+        input, textarea { width: 100%; padding: 12px; margin: 8px 0; border-radius: 8px; border: 1px solid #334155; background: #1e293b; color: white; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; background: #6366f1; color: white; border: none; border-radius: 8px; cursor: pointer; }
         .hidden { display: none; }
     </style>
 </head>
 <body>
 
 <div class="wrapper">
-    <h1>شعر و گفت‌وگو</h1>
-
-    <!-- صفحه ثبت‌نام -->
     <div id="reg-screen" class="card">
-        <h3>خوش آمدید، نام و شهرتان را وارد کنید:</h3>
+        <h3>ورود به چت</h3>
         <input type="text" id="reg-name" placeholder="نام">
         <input type="text" id="reg-city" placeholder="شهر">
-        <button onclick="register()">ورود به دنیای لجندها</button>
+        <button onclick="register()">شروع چت</button>
     </div>
 
-    <!-- بخش اصلی سایت -->
-    <div id="main-screen" class="hidden">
-        <div class="card" id="rank-badge">رتبه شما: نوپا</div>
-        
-        <div class="card">
-            <h3>گفت‌وگوی زنده</h3>
-            <div id="chat-box"></div>
-            <textarea id="message" placeholder="پیام بده و امتیاز بگیر..."></textarea>
-            <button onclick="sendMessage()">ارسال پیام</button>
-        </div>
+    <div id="chat-screen" class="card hidden">
+        <div id="rank-badge" style="color:gold; font-weight:bold; margin-bottom:10px;">رتبه شما: نوپا</div>
+        <div id="chat-box" style="height:300px; overflow-y:auto; background:rgba(0,0,0,0.3); padding:10px; margin-bottom:10px; border-radius:5px;"></div>
+        <textarea id="message" placeholder="پیام..."></textarea>
+        <button onclick="sendMessage()">ارسال</button>
     </div>
 </div>
 
 <script>
-    const supabase = supabase.createClient('https://bvjejxvkkkzlxgoxwfof.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ2amVqeHZra2t6bHhnb3h3Zm9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA0MzI2NzUsImV4cCI6MjEwNjAwODY3NX0.bgtcHV8UqtIXZbBRU8exxhE6f-uRaKdEvasDZrRCluk');
+    // ۱. اینجا کلیدت رو وارد کن
+    const db = supabase.createClient('https://bvjejxvkkkzlxgoxwfof.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ2amVqeHZra2t6bHhnb3h3Zm9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA0MzI2NzUsImV4cCI6MjEwNjAwODY3NX0.bgtcHV8UqtIXZbBRU8exxhE6f-uRaKdEvasDZrRCluk');
     
-    // سیستم امتیاز دهی
-    function getRank(points) {
-        if (points > 1000) return 'لجند (Legend)';
-        if (points > 500) return 'استاد سخن';
-        if (points > 100) return 'شاعر';
-        return 'نوپا';
-    }
-
     function register() {
         const name = document.getElementById('reg-name').value;
         const city = document.getElementById('reg-city').value;
-        if(!name || !city) return alert('نام و شهر را وارد کنید');
-        
+        if(!name || !city) return alert('همه فیلدها را پر کن');
         localStorage.setItem('user_name', name);
         localStorage.setItem('user_city', city);
         localStorage.setItem('points', 0);
-        location.reload();
+        location.reload(); // رفرش برای اعمال تنظیمات
     }
 
     if(localStorage.getItem('user_name')) {
         document.getElementById('reg-screen').classList.add('hidden');
-        document.getElementById('main-screen').classList.remove('hidden');
-        updateRankUI();
+        document.getElementById('chat-screen').classList.remove('hidden');
         fetchMessages();
-    }
-
-    function updateRankUI() {
-        const pts = parseInt(localStorage.getItem('points') || 0);
-        document.getElementById('rank-badge').innerText = `رتبه شما: ${getRank(pts)} (امتیاز: ${pts})`;
     }
 
     async function sendMessage() {
         const content = document.getElementById('message').value;
         if(!content) return;
-
-        // افزایش امتیاز
+        
         let pts = parseInt(localStorage.getItem('points') || 0) + 10;
         localStorage.setItem('points', pts);
         
-        await supabase.from('messages').insert([{ 
+        const { error } = await db.from('messages').insert([{ 
             user_name: localStorage.getItem('user_name'),
             user_city: localStorage.getItem('user_city'),
-            user_rank: getRank(pts),
-            content: content 
+            content: content,
+            user_rank: pts > 1000 ? 'لجند' : (pts > 100 ? 'استاد' : 'نوپا')
         }]);
         
         document.getElementById('message').value = '';
-        updateRankUI();
+        if(error) alert(error.message);
     }
 
     async function fetchMessages() {
-        const { data } = await supabase.from('messages').select('*').order('created_at', { ascending: false });
-        document.getElementById('chat-box').innerHTML = data.map(m => `
-            <div style="margin-bottom:10px; border-bottom:1px solid #334; padding-bottom:5px;">
-                <small style="color:var(--primary)">${m.user_rank}</small><br>
-                <b>${m.user_name} (${m.user_city}):</b> ${m.content}
-            </div>
-        `).join('');
+        const { data } = await db.from('messages').select('*').order('created_at', { ascending: false });
+        if (data) {
+            document.getElementById('chat-box').innerHTML = data.map(m => `
+                <div style="margin-bottom:10px; font-size:14px;">
+                    <b style="color:#6366f1">${m.user_name} (${m.user_city})</b> <small style="color:gold">[${m.user_rank}]</small>: ${m.content}
+                </div>
+            `).join('');
+        }
     }
 
-    supabase.channel('messages').on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, fetchMessages).subscribe();
+    // آپدیت زنده (ریل‌تایم)
+    db.channel('messages').on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, fetchMessages).subscribe();
 </script>
 </body>
 </html>
